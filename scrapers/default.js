@@ -21,6 +21,20 @@
     };
 }(jQuery));
 
+// allow selecting elements with regular expressions so we can select in case insensitive mode
+jQuery.expr[':'].regex = function(elem, index, match) {
+	var matchParams = match[3].split(','),
+		validLabels = /^(data|css):/,
+		attr = {
+			method: matchParams[0].match(validLabels) ? 
+				matchParams[0].split(':')[0] : 'attr',
+			property: matchParams.shift().replace(validLabels,'')
+		},
+		regexFlags = 'ig',
+		regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g,''), regexFlags);
+	return regex.test(jQuery(elem)[attr.method](attr.property));
+};
+
 Playgrub.source.url = '.*';
 Playgrub.source.error = 'Sorry, no suitable haudio tags could be found on this page';
 Playgrub.source.scrape = function () {
@@ -40,13 +54,13 @@ Playgrub.source.scrape = function () {
             }
         }
     });
-    $('*[itemtype="http://schema.org/MusicRecording"]').each(function () {
-        if ($(this).attr('itemprop') === "tracks") {
+   $(":regex(itemtype,http://.*schema.org/MusicRecording)").each(function () {
+        if ($(this).attr("itemprop") === "tracks") {
             var track = {};
-            track.title = $.trim($(this).find("*[itemprop='name']").text());
-            track.artist = $.trim($(this).find("*[itemprop='byArtist']").text());
+            track.title = $.trim($(this).find(":regex(itemprop,name)").text());
+            track.artist = $.trim($(":regex(itemprop,byArtist)").text());
             if (!track.artist) {
-                track.artist = $.trim($('*[itemtype="http://schema.org/MusicGroup"] > *[itemprop="name"]').text());
+                track.artist = $.trim($(":regex(itemtype,http://.*schema.org/MusicGroup) :regex(itemprop,name)").text());
             }
             if (track.artist && track.title && track.artist !== "" && track.title !== "") {
                 Playgrub.playlist.add_track(track.artist, track.title);
