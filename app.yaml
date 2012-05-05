@@ -4,14 +4,6 @@ runtime: python
 api_version: 1
 
 handlers:
-- url: /admin/.*
-  script: admin.py
-  login: admin
-
-- url: /cron/.*
-  script: crontasks.py
-  login: admin
-    
 - url: /js
   static_dir: js
 
