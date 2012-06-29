@@ -11,7 +11,7 @@ Playgrub.source.url = 'http://*thisismyjam.com.*';
 Playgrub.source.error = 'Check your This is My Jam page - only playlist pages are supported.'
 Playgrub.source.scrape = function() {
 
-$("div.attachedContent").each(function() {
+$("div.newsItem").each(function() {
         var title = $.trim($(this).find('h4 a.jamTitle').text());
         var a = title.toString().split("\n");
         var song = $.trim(a[0]);
