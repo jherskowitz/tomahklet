@@ -14,7 +14,7 @@ Playgrub.source.scrape = function() {
     var artist;
     var song;
 
-    $(".tweet-text").each(function () {
+    $(".js-tweet-text").each(function () {
         if($(this).text().match(reg)) {
             artist = RegExp.$1;
             song = RegExp.$2;
